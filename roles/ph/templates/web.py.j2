@@ -1,0 +1,35 @@
+from dash import dash, dcc, html, Input, Output
+from dash_bootstrap_templates import load_figure_template
+import dash_bootstrap_components as dbc
+import plotly.express as px
+import pandas as pd
+
+load_figure_template('LUX')
+
+app = dash.Dash(external_stylesheets=[dbc.themes.LUX],
+                suppress_callback_exceptions=True)
+app.title = "Puppy Hydrometer"
+
+def serve_layout():
+    df1 = pd.read_csv('{{data_file}}')
+    fig1 = px.line(df1, x = 'time', y = 'weight',
+                    labels={"time":"time",
+                            "weight":"weight (grams)"
+                    })
+    return html.Div(children = [
+                dbc.Row(
+                        [
+                            dbc.Col(html.H1('Water bowl weight'), style = {'margin-left':'7px','margin-top':'7px'})
+                        ]
+                    ),
+                dbc.Row(
+                        [
+                            dbc.Col(dcc.Graph(id = 'graph1', figure = fig1), style = {'margin-left':'15px', 'margin-top':'7px', 'margin-right':'15px'})
+                        ]
+                    )
+                ]
+            )
+
+app.layout = serve_layout
+
+app.run_server(debug=True, host='0.0.0.0')

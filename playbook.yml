@@ -1,0 +1,14 @@
+---
+- hosts: all
+  become: true
+  roles:
+    - ph
+  vars:
+    gpio_pin_data: 5
+    gpio_pin_clock: 6
+    hx711_reference_unit: 58 
+    hx711_zero_value: 199573
+    base_install_dir: /opt/ph
+    virtual_env_dir: "{{base_install_dir}}/venv"
+    data_folder: "{{base_install_dir}}/data" 
+    data_file: "{{data_folder}}/ph.csv"

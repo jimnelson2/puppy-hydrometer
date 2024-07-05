@@ -1,0 +1,12 @@
+---
+- name: Install python packages
+  ansible.builtin.pip:
+    virtualenv: "{{virtual_env_dir}}"
+    virtualenv_command: "python3 -m venv"
+    name:
+      - hx711-rpi-py
+      - dash
+      - dash-bootstrap-components
+      - dash_bootstrap_templates
+      - pandas
+      - plotly

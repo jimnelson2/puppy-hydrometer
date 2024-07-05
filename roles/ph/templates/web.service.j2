@@ -1,0 +1,13 @@
+[Unit]
+Description=Web server for collected data
+After=syslog.target network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory={{ virtual_env_dir }}
+ExecStart={{ virtual_env_dir }}/bin/python {{ base_install_dir }}/web.py
+Restart=on-abort
+
+[Install]
+WantedBy=multi-user.target

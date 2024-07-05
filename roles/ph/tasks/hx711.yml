@@ -1,0 +1,18 @@
+---
+- name: Install build dependencies
+  ansible.builtin.apt:
+    name: liblgpio-dev
+    update_cache: yes
+
+- name: Clone hx711 library
+  ansible.builtin.git:
+    repo: https://github.com/endail/hx711
+    dest: "{{base_install_dir}}/hx711-driver"
+    depth: 1
+
+- name: Build hx711 library
+  ansible.builtin.command: chdir={{base_install_dir}}/hx711-driver/ {{ item }}
+  with_items:
+    - make
+    - make install
+    - ldconfig
