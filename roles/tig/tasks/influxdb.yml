@@ -1,0 +1,21 @@
+---
+
+- name: Add InfluxDB APT key
+  ansible.builtin.shell:
+    cmd: wget -q -O - https://repos.influxdata.com/influxdata-archive.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/influxdata-archive.gpg > /dev/null
+
+- name: Add InfluxDB APT repository
+  ansible.builtin.shell:
+    cmd: echo 'deb [signed-by=/etc/apt/trusted.gpg.d/influxdata-archive.gpg] https://repos.influxdata.com/debian stable main' | sudo tee /etc/apt/sources.list.d/influxdata.list
+
+- name: Install InfluxDB2 version {{ influxdb2_version }}
+  ansible.builtin.apt:
+    name: influxdb2={{ influxdb2_version }}
+    update_cache: yes
+
+- name: Launch InfluxDB service
+  ansible.builtin.systemd_service:
+    name: influxdb
+    enabled: true
+    daemon_reload: true
+    state: started

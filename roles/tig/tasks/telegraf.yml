@@ -1,0 +1,21 @@
+---
+
+- name: Add Telegraf APT key
+  ansible.builtin.shell:
+    cmd: wget -q -O - https://repos.influxdata.com/influxdata-archive.key | gpg --dearmor | sudo tee /etc/apt/trusted.gpg.d/influxdata-archive.gpg > /dev/null
+
+- name: Add Telegraf APT repository
+  ansible.builtin.shell:
+    cmd: echo 'deb [signed-by=/etc/apt/trusted.gpg.d/influxdata-archive.gpg] https://repos.influxdata.com/debian stable main' | sudo tee /etc/apt/sources.list.d/influxdata.list
+
+- name: Install Telegraf version {{ telegraf_version }}
+  ansible.builtin.apt:
+    name: telegraf={{ telegraf_version }}
+    update_cache: yes
+
+- name: Launch Telegraf service
+  ansible.builtin.systemd_service:
+    name: telegraf
+    enabled: true
+    daemon_reload: true
+    state: started
