@@ -1,6 +1,8 @@
 import datetime
 import os.path
+import time
 from HX711 import *
+from datetime import timedelta
 
 hx = SimpleHX711({{gpio_pin_data}}, {{gpio_pin_clock}}, {{hx711_reference_unit}}, {{hx711_zero_value}})
 hx.setUnit(Mass.Unit.G)
@@ -11,6 +13,7 @@ if not os.path.exists("{{data_file}}"):
     myfile.write("time,weight\n")
 
 while True:
-  wt = round(float(hx.weight(10)),2)
   with open("{{data_file}}", "a") as myfile:
+    wt = round(float(hx.weight(timedelta(seconds=1.5))),0)
     myfile.write(datetime.datetime.now().isoformat() + "," + str(wt) + "\n")
+    time.sleep(0.5)
