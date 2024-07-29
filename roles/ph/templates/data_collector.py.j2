@@ -1,6 +1,9 @@
 import datetime
 import os.path
 import time
+from influxdb_client import InfluxDBClient, Point
+from influxdb_client .client.write_api import SYNCHRONOUS
+
 from HX711 import *
 from datetime import timedelta
 
@@ -8,12 +11,15 @@ hx = SimpleHX711({{gpio_pin_data}}, {{gpio_pin_clock}}, {{hx711_reference_unit}}
 hx.setUnit(Mass.Unit.G)
 hx.zero()
 
-if not os.path.exists("{{data_file}}"):
-  with open("{{data_file}}", "w") as myfile:
-    myfile.write("time,weight\n")
-
 while True:
-  with open("{{data_file}}", "a") as myfile:
-    wt = round(float(hx.weight(timedelta(seconds=1.5))),0)
-    myfile.write(datetime.datetime.now().isoformat() + "," + str(wt) + "\n")
-    time.sleep(0.5)
+  client = InfluxDBClient(url="http://localhost:8086", token="{{influx_token}}", org="{{influx_org}}")
+  write_api = client.write_api(write_options=SYNCHRONOUS)
+
+  wt = round(float(hx.weight(timedelta(seconds=1.5))),0)
+  _point = Point("bowl").tag("location","kitchen").field("grams", wt)
+  write_api.write(bucket="{{influx_bucket}}", record=[_point])
+
+  client.close()
+  
+  time.sleep(0.5)
+  

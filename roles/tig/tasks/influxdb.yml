@@ -12,6 +12,13 @@
   ansible.builtin.apt:
     name: influxdb2={{ influxdb2_version }}
     update_cache: yes
+  notify:
+    - Setup influxDB
+
+#- name: Install InfluxDB python package
+#  ansible.builtin.apt:
+#    name: python3-influxdb
+#    update_cache: yes
 
 - name: Launch InfluxDB service
   ansible.builtin.systemd_service:
@@ -19,3 +26,9 @@
     enabled: true
     daemon_reload: true
     state: started
+
+- name: Wait for InfluxDB to start
+  wait_for:
+    port: 8086
+    delay: 5
+    timeout: 60

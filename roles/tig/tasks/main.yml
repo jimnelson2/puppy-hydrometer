@@ -1,10 +1,4 @@
 ---
 
-- name: Install ufw
-  ansible.builtin.apt:
-    name: ufw
-    update_cache: yes
-
-- include_tasks: telegraf.yml
 - include_tasks: influxdb.yml
 - include_tasks: grafana.yml

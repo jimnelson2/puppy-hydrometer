@@ -1,0 +1,5 @@
+---
+
+- name: Setup influxDB
+  ansible.builtin.shell:
+    cmd: influx setup --username {{influx_admin_username}} --password {{influx_admin_password}} --token {{influx_token}} --org {{influx_org}} --bucket {{influx_bucket}} --force

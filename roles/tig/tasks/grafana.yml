@@ -20,6 +20,11 @@
     daemon_reload: true
     state: started
 
+- name: Install ufw
+  ansible.builtin.apt:
+    name: ufw
+    update_cache: yes
+
 - name: Allow port 3000
   community.general.ufw:
     rule: allow
